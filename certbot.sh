@@ -3,7 +3,7 @@ set -e
 
 if [ -f /devops/nginx-final.conf ] ; then
 
-    cat /devops/nginx-final.conf | grep server_name | uniq > doms.txt
+    cat /devops/nginx-final.conf | grep server_name | uniq > certbot_domains.txt
     while read line ; do
         if [ -z $CERTBOT_DOMAINS ] ; then
             CERTBOT_DOMAINS=$(echo -e "$line" | tr -s " " | cut -d " " -f 2 | cut -d ";" -f 1)
