@@ -25,7 +25,7 @@ if [ -f /devops/nginx-final.conf ] ; then
             --agree-tos \
             --no-eff-email \
             --no-redirect \
-            --register-unsafely-without-email \ 
+            --register-unsafely-without-email \
             --domain "${CERTBOT_DOMAINS}"
         sleep 3
         rm -rf /etc/nginx/sites-enabled/*

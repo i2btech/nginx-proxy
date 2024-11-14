@@ -1,6 +1,6 @@
 #!/bin/sh
 
-mkdir /mnt/data/letsencrypt
+mkdir -p /mnt/data/letsencrypt
 ln -s /mnt/data/letsencrypt /etc/letsencrypt
 
 if [ -f /devops/nginx-final.conf ] ; then

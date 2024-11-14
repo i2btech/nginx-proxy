@@ -5,6 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN \
   apt update && \
   apt install -y --no-install-recommends \
+    nano \
     python3 \
     python3-pip \
     curl \
