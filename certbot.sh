@@ -3,23 +3,22 @@ set -e
 
 if [ -f /devops/nginx-final.conf ] ; then
 
-    cat /devops/nginx-final.conf | grep ssl_certificate_key | tr -s " " > certbot_domains.txt
+    cat /devops/nginx-final.conf | grep server_name | uniq > doms.txt
     while read line ; do
         if [ -z $CERTBOT_DOMAINS ] ; then
-            CERTBOT_DOMAINS=$(echo -e "$line" | tr -s " " | cut -d " " -f 2 | cut -d ";" -f 1 | cut -d "/" -f 5)
+            CERTBOT_DOMAINS=$(echo -e "$line" | tr -s " " | cut -d " " -f 2 | cut -d ";" -f 1)
         else
-            CERTBOT_DOMAINS="$CERTBOT_DOMAINS,$(echo -e "$line" | tr -s " " | cut -d " " -f 2 | cut -d ";" -f 1 | cut -d "/" -f 5)"
+            CERTBOT_DOMAINS="$CERTBOT_DOMAINS,$(echo -e "$line" | tr -s " " | cut -d " " -f 2 | cut -d ";" -f 1)"
         fi
     done < certbot_domains.txt
 
-    SSL_KEY=$(cat /devops/nginx-final.conf | grep ssl_certificate_key | tr -s " " | cut -d " " -f 3 | cut -d ";" -f 1 | tail -n 1)
-    if [ -f $SSL_KEY ] ; then
-        # if there is multiple vhost and one certificate exist, we assume all of them exist
+    if [ -f "/etc/letsencrypt/live/proxy/fullchain.pem" ] ; then
         echo "key found" > /devops/certbot.log
         exit 1
     else
         echo "key NOT found" > /devops/certbot.log
         certbot certonly \
+            --cert-name proxy \
             --nginx \
             --non-interactive \
             --agree-tos \
