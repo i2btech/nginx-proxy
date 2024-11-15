@@ -4,7 +4,7 @@
 
 * se asume que los servidores de backend se encuentran arriba y disponibles
 * el folder de letscrypt es almacenado en /mnt/data, se debería montar un volmen en esa ruta en caso de querer persistir info
-* config nginx debe estar definida en archivos nginx-final.conf y nginx-initial.conf, debe ser copiada a folder /devops/
+* config nginx debe estar definida en archivo nginx.conf, debe ser copiada a folder /devops/, dentro del container, el archivo es puesto en /etc/nginx/conf.d/
 * se deben usar las siguentes opciones para referenciar los archivos asociados a ssl:
     * ssl_certificate /etc/letsencrypt/live/proxy/fullchain.pem;
     * ssl_certificate_key /etc/letsencrypt/live/proxy/privkey.pem;
@@ -16,29 +16,19 @@ Archivo `Dockerfile` para construir la imagen del proxy:
 ```
 FROM  i2btech/nginx-proxy:latest
 
-COPY nginx-final.conf /devops/nginx-final.conf
-COPY nginx-initial.conf /devops/nginx-initial.conf
+COPY nginx.conf /devops/nginx.conf
 ```
 
-El contenido del archivo `nginx-initial.conf` debería ser similar a este, se utiliza para la generación de los certificados:
+El contenido del archivo `nginx.conf` debería ser similar a este, se utiliza para exponer los servicios através del proxy:
 ```
 server {
     listen 80;
-    server_name demo-proxy.solopide.me;
-    root /var/www/html;
-}
-```
-
-El contenido del archivo `nginx-final.conf` debería ser similar a este, se utiliza para exponer los servicios através del proxy:
-```
-server {
-    listen 80;
-    server_name demo-proxy.solopide.me;
+    server_name demo-proxy.i2btech.com;
     return 301 https://$host$request_uri;
 }
 server {
     listen 443 ssl http2;
-    server_name demo-proxy.solopide.me;
+    server_name demo-proxy.i2btech.com;
 
     root /var/www/html;
 

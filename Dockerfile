@@ -20,11 +20,10 @@ RUN \
   pip cache purge
 
 RUN mkdir -p /devops
-COPY certbot.sh /devops/certbot.sh
 COPY crontab.conf /etc/crontab
 COPY entrypoint.sh /devops/entrypoint.sh
 COPY supervisor.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN chmod 755 /devops/*.sh
 
-CMD /devops/entrypoint.sh
+CMD /devops/entrypoint.sh -s
