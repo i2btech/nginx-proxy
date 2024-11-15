@@ -51,7 +51,7 @@ startup() {
     /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 }
 
-certbot() {
+certbot_config() {
     if [ -f "/etc/letsencrypt/live/proxy/fullchain.pem" ] ; then
         echo "key found" > /devops/certbot.log
         exit 1
@@ -85,7 +85,7 @@ while [ : ]; do
         shift
         ;;
     -c | --certbot)
-        certbot
+        certbot_config
         shift
         ;;
     --) shift; 
