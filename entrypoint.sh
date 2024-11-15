@@ -57,19 +57,19 @@ certbot() {
         exit 1
     else
         echo "key NOT found" > /devops/certbot.log
-        # certbot certonly \
-        #     --cert-name proxy \
-        #     --nginx \
-        #     --non-interactive \
-        #     --agree-tos \
-        #     --no-eff-email \
-        #     --no-redirect \
-        #     --register-unsafely-without-email \
-        #     --domain "$(get_domains)"
-        # sleep 3
-        # rm -rf /etc/nginx/sites-enabled/*
-        # cp /devops/nginx.conf /etc/nginx/sites-enabled/
-        # nginx -s reload
+        certbot certonly \
+            --cert-name proxy \
+            --nginx \
+            --non-interactive \
+            --agree-tos \
+            --no-eff-email \
+            --no-redirect \
+            --register-unsafely-without-email \
+            --domain "$(get_domains)"
+        sleep 3
+        rm -rf /etc/nginx/sites-enabled/*
+        cp /devops/nginx.conf /etc/nginx/sites-enabled/
+        nginx -s reload
     fi
 }
 
