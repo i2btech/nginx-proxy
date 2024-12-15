@@ -26,4 +26,4 @@ COPY supervisor.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN chmod 755 /devops/*.sh
 
-CMD /devops/entrypoint.sh -s
+CMD ["/devops/entrypoint.sh", "-r"]
