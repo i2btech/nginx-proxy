@@ -22,8 +22,9 @@ RUN \
 RUN mkdir -p /devops
 COPY crontab.conf /etc/crontab
 COPY entrypoint.sh /devops/entrypoint.sh
-COPY supervisor.conf /etc/supervisor/conf.d/supervisord.conf
+COPY supervisor-*.conf /etc/supervisor/conf.d/
 
 RUN chmod 755 /devops/*.sh
 
-CMD ["/devops/entrypoint.sh", "-r"]
+ENTRYPOINT ["/devops/entrypoint.sh"]
+CMD ["-r"]

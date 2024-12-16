@@ -2,7 +2,7 @@
 # https://www.baeldung.com/linux/bash-parse-command-line-arguments
 set -e
 
-VALID_ARGS=$(getopt -o hlr --long help,startup_local,startup_remote -- "$@")
+VALID_ARGS=$(getopt -o hrlc --long help,startup_remote,startup_local,certbot -- "$@")
 if [ $? -ne 0 ]; then
     exit 1;
 fi
@@ -11,9 +11,10 @@ help() {
     cat << USAGE >&2
 Usage:
     entrypoint.sh [-h] [-s] [-c]
-    -h  | --help           Show this message
+    -h | --help           Show this message
     -r | --startup_remote ...
     -l | --startup_local  ...
+    -c | --certbot        ...
 USAGE
     exit 1
 }
@@ -32,6 +33,9 @@ get_domains() {
 
 # this run the proxy on a remote machine that is expose to internet
 startup_remote() {
+
+    cp /etc/supervisor/conf.d/supervisor-remote.conf /etc/supervisor/conf.d/supervisord-env.conf
+
     mkdir -p /mnt/data/letsencrypt
     ln -s /mnt/data/letsencrypt /etc/letsencrypt
 
@@ -49,10 +53,7 @@ startup_remote() {
         done
     fi
 
-    /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
-    sleep 2
-
-    certbot_config
+    /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisor-main.conf
 }
 
 certbot_config() {
@@ -80,6 +81,9 @@ certbot_config() {
 # this run the proxy on a local machine that is not expose to internet
 # we use a selfsigned certificate
 startup_local() {
+
+    cp /etc/supervisor/conf.d/supervisor-local.conf /etc/supervisor/conf.d/supervisord-env.conf
+
     mkdir -p /mnt/data/letsencrypt
     ln -s /mnt/data/letsencrypt /etc/letsencrypt
 
@@ -98,7 +102,7 @@ startup_local() {
         -out /etc/letsencrypt/live/proxy/fullchain.pem
     fi
     cp /devops/nginx.conf /etc/nginx/sites-enabled/
-    /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+    /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisor-main.conf
 }
 
 eval set -- "$VALID_ARGS"
@@ -114,6 +118,10 @@ while [ : ]; do
         ;;
     -l | --startup-local)
         startup_local
+        shift
+        ;;
+    -c | --certbot)
+        certbot_config
         shift
         ;;
     --) shift; 
