@@ -1,0 +1,16 @@
+services:
+
+  proxy:
+    image: i2btech/nginx-proxy:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NGINX_HTTPS_PORT=8443
+    container_name: proxy
+    hostname: proxy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8443:8443"
+      - "8080:8080"

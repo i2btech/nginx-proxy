@@ -11,7 +11,7 @@ RUN \
     curl \
     nginx \
     supervisor \
-    cron && \
+    gettext && \
   apt clean && \
   apt autoremove --purge
 
@@ -20,11 +20,11 @@ RUN \
   pip cache purge
 
 RUN mkdir -p /devops
-COPY crontab.conf /etc/crontab
 COPY entrypoint.sh /devops/entrypoint.sh
 COPY supervisor-*.conf /etc/supervisor/conf.d/
-
+COPY nginx-main.conf /devops/nginx-main.conf
+COPY nginx-vhost.conf /devops/nginx-vhost.conf
 RUN chmod 755 /devops/*.sh
 
 ENTRYPOINT ["/devops/entrypoint.sh"]
-CMD ["-r"]
+CMD ["-l"]
