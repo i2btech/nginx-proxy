@@ -37,11 +37,13 @@ copy_nginx_conf() {
     export NGINX_HTTP_PORT="${NGINX_HTTP_PORT:-80}"
     export NGINX_HTTPS_PORT="${NGINX_HTTPS_PORT:-443}"
     export NGINX_BACKEND="${NGINX_BACKEND:-localhost}"
+    export NGINX_HEALTH_CHECK="${NGINX_HEALTH_CHECK:-/health_check}"
     echo "*** Using variables:"
     echo "* NGINX_HTTP_PORT: ${NGINX_HTTP_PORT}"
     echo "* NGINX_HTTPS_PORT: ${NGINX_HTTPS_PORT}"
     echo "* NGINX_BACKEND: ${NGINX_BACKEND}"
-    envsubst '$NGINX_HTTP_PORT $NGINX_HTTPS_PORT $NGINX_BACKEND' < /devops/nginx-vhost.conf > /etc/nginx/sites-enabled/nginx-vhost.conf
+    echo "* NGINX_HEALTH_CHECK: ${NGINX_HEALTH_CHECK}"
+    envsubst '$NGINX_HTTP_PORT $NGINX_HTTPS_PORT $NGINX_BACKEND $NGINX_HEALTH_CHECK' < /devops/nginx-vhost.conf > /etc/nginx/sites-enabled/nginx-vhost.conf
 
     echo ":)" > /var/www/html/index.html
 }
