@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - NGINX_HTTPS_PORT=8443
+      - NGINX_HEALTH_CHECK=/api/healthz
     container_name: proxy
     hostname: proxy
     ports:
